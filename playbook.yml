@@ -1,0 +1,14 @@
+- hosts: all
+  sudo: true
+  tasks:
+    - name: add a new user      #Linuxユーザの作成
+      user: name={{ name }} state=present
+
+    - name: mkdir .ssh          #.sshフォルダの作成
+      file: dest=/home/{{ name }}/.ssh/ state=directory owner={{ name }} group={{ name }} mode=700
+
+    - name: add authorized keys #.ssh以下にauthorized_keysファイルの作成
+      file: dest=/home/{{ name }}/.ssh/authorized_keys state=touch owner={{ name }} group={{ name }} mode=600
+
+    - name: copy publickey     #公開鍵を貼付け
+      copy: src=./.ssh/{{ name }}.pub dest=/home/{{ name }}/.ssh/authorized_keys
